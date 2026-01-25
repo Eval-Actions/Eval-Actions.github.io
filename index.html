@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods</title>
+    <meta content="Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods"
+        name="description" />
+    <meta content="summary" name="twitter:card" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <link href="static/css/template.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/my_style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 全局背景 --- */
+        body {
+            background-color: #f7f9fb;
+            /* 浅灰背景，突出白色卡片 */
+            font-family: 'Google Sans', 'Noto Sans', sans-serif;
+            color: #333;
+        }
+
+        /* --- 核心卡片样式 (Shadow Block) --- */
+        .shadow-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.03), 0 4px 8px rgba(0, 0, 0, 0.02);
+            padding: 50px 40px;
+            margin: 0 auto 40px auto;
+            /* 卡片间距 */
+            width: 95%;
+            max-width: 1200px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .shadow-card {
+                padding: 30px 20px;
+                border-radius: 16px;
+                margin-bottom: 25px;
+            }
+        }
+
+        /* --- 标题样式 --- */
+        h2.grey-heading_nerf {
+            font-size: 2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            margin-top: 0;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        /* --- 按钮样式 (恢复正常) --- */
+        .external-link a.btn {
+            margin: 0 20px !important;
+            /* 保持您要求的间距 */
+            /* 移除了之前强制的白色背景和阴影，恢复模板默认样式 */
+        }
+
+        /* --- 图片样式 --- */
+        .teaser-img {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1000px;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .caption-text {
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto 0;
+            color: #5f6368;
+            font-size: 0.95em;
+            text-align: justify;
+            line-height: 1.6;
+        }
+
+        /* --- CoT 文本框 --- */
+        .cot-text {
+            background-color: #f8f9fa;
+            border-left: 5px solid #6c757d;
+            border-radius: 0 12px 12px 0;
+            padding: 20px;
+            font-size: 0.85em;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            white-space: normal;
+            text-align: left;
+            height: 260px;
+            overflow-y: auto;
+            margin-top: 15px;
+            line-height: 1.6;
+            color: #2d3436;
+        }
+
+        .cot-low {
+            border-left-color: #dc3545;
+            background-color: #fff8f8;
+        }
+
+        .cot-med {
+            border-left-color: #ffc107;
+            background-color: #fffdf5;
+        }
+
+        .cot-high {
+            border-left-color: #28a745;
+            background-color: #f0fff4;
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            background-color: #000;
+            display: block;
+        }
+
+        /* --- 表格样式 --- */
+        .ranking-table {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .ranking-table th {
+            background-color: #f1f3f5;
+            padding: 18px;
+            font-weight: 700;
+            color: #495057;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .ranking-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .ranking-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bold-score {
+            font-weight: 900;
+            color: #6f42c1;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .rank-1 {
+            background-color: #ffd700;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .rank-2 {
+            background-color: #c0c0c0;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .rank-3 {
+            background-color: #cd7f32;
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 辅助类 */
+        .w3-col.l2 {
+            width: 20%;
+        }
+
+        @media (max-width: 1200px) {
+            .w3-col.m4 {
+                width: 33.33333%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .w3-col.m4 {
+                width: 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="section hero nerf-_v2" style="padding-bottom: 50px;">
+        <div class="container-2 nerf_header_v2 w-container">
+            <h1 class="nerf_title_v2">
+                <span style="color: #f47149; font-weight: 900; text-shadow: 2px 2px 8px #fdd5c5, 0 0 2px #fff;">
+                    \(TERM-Bench\)
+                </span>
+                <br />
+                <span style="font-size: 0.7em; color: #444;">
+                    Trustworthy Evaluation of Robotic Manipulation: A New Benchmark and AutoEval Methods
+                </span>
+            </h1>
+
+            <div class="external-link">
+                <a class="btn" href="#" role="button" target="_blank">
+                    <i class="ai ai-arxiv"></i> Paper
+                </a>
+                <a class="btn" href="https://github.com/LogSSim/TERM-Bench" role="button" target="_blank">
+                    <i class="fa-brands fa-github"></i> Code
+                </a>
+                <a class="btn" href="#" role="button" target="_blank">
+                    <i class="fa-solid fa-database"></i> Eval-Actions Dataset
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Motivation</h2>
+        <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <img src="assets/images/motivation.png" class="teaser-img" loading="lazy"
+                alt="Motivation: Binary vs Comprehensive Evaluation">
+            <p class="caption-text">
+                <strong>Figure 1.</strong> The Crisis of Evaluation Credibility and the Proposed Trustworthy Evaluation
+                Solution.
+                (Top) The Crisis: We identify two critical sources of ambiguity obstructing trustworthy evaluation: Gap
+                1 (Ambiguity in Execution Quality), where binary metrics mask shaky or unsafe execution (visualized as
+                ''Jerky Success'' vs. ''Smooth Success''), and Gap 2 (Ambiguity in Source Authenticity), where the
+                provenance of ''successful'' demonstrations is unverifiable.
+                (Bottom) Proposed Solution: Our Trustworthy Evaluation Framework bridges these gaps. Powered by the
+                Eval-Actions Benchmark and the AutoEval Architecture (depicted as the green robot optimized via
+                Supervised Fine-Tuning (SFT)), the system achieves precise Fine-Grained Action Quality assessment (SRCC
+                0.84) and robust Source Authenticity verification (99.6%), as shown in the green box. This significantly
+                outperforms standard Vision-Language Models (VLMs) without SFT (red box) to ensure evaluation
+                credibility.
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Abstract</h2>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <p class="paragraph-3 nerf_text nerf_results_text"
+                style="text-align: justify; font-size: 1.13em; line-height: 1.7; color: #444;">
+                Driven by the rapid evolution of Vision-Action (VA) and Vision-Language-Action (VLA) models, imitation
+                learning has significantly advanced robotic manipulation capabilities. However, evaluation methodologies
+                have lagged behind, hindering the establishment of Trustworthy Evaluation for these behaviors. Current
+                paradigms rely predominantly on binary success rates, failing to address the critical dimensions of
+                trust: Source Authenticity (i.e., distinguishing genuine policy behaviors from human teleoperation) and
+                Execution Quality (e.g., smoothness and safety). To bridge these gaps, we propose a comprehensive
+                solution that combines the Eval-Actions benchmark and the AutoEval architecture. First, we construct the
+                Eval-Actions benchmark to support trustworthiness analysis. Distinct from existing datasets restricted
+                to successful human demonstrations, Eval-Actions innovatively integrates VA and VLA policy execution
+                trajectories alongside human teleoperation data, explicitly including failure scenarios. This dataset is
+                structured around three core supervision signals: Expert Grading (EG), Rank-Guided preferences (RG), and
+                Chain-of-Thought (CoT). Building on this, we propose the AutoEval architecture: AutoEval Small
+                (AutoEval-S) leverages Spatio-Temporal Aggregation for semantic assessment, augmented by an auxiliary
+                Kinematic Calibration Signal to refine motion smoothness; AutoEval Plus (AutoEval-P) incorporates the
+                Group Relative Policy Optimization (GRPO) paradigm to enhance logical reasoning capabilities.
+                Experimental results demonstrate that AutoEval exhibits exceptional evaluation precision, achieving
+                Spearman’s Rank Correlation Coefficients (SRCC) of 0.81 and 0.84 under the EG and RG protocols,
+                respectively. Crucially, the framework possesses robust source discrimination capabilities,
+                distinguishing between policy-generated and teleoperated videos with 99.6% accuracy, thereby
+                establishing a rigorous standard for trustworthy robotic evaluation.
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Benchmark Overview</h2>
+        <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <img src="assets/images/examples.png" class="teaser-img" style="max-width: 600px;" loading="lazy"
+                alt="Data Modalities">
+            <p class="caption-text" style="text-align: center;">
+                <strong>Figure 2.</strong> Overview of the Eval-Actions Benchmark.
+                The figure visualizes the dataset structure:
+                (Left) Task Diversity: Representative snapshots from our 150+ scenarios, covering both
+                single-arm interactions (e.g., "Throw away trash") and complex bimanual coordination (e.g., "Tidy
+                medicine box").
+                (Middle) Detailed Case Study: A specific instantiation of the “Throw away trash" task shown on
+                the left. Crucially, each task encompasses diverse demonstration data ranging from high-quality
+                successes to failure scenarios—exemplified here by contrasting smooth teleoperation with jerky policy
+                behaviors.
+                (Right) Data Composition: The stack enumerates the dense multimodal signals encapsulated within
+                each episode. This includes raw sensory data (RGB, Depth), precise kinematic records (7/14-DoF Joint
+                Trajectories), and the Fine-Grained Quality Radar Chart, which explicitly quantifies the four core
+                dimensions (Success, Smoothness, Safety, Efficiency) to enable diagnostic assessment.
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">The AutoEval Framework</h2>
+        <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <img src="assets/images/framework.png" class="teaser-img" loading="lazy" alt="AutoEval Framework">
+            <p class="caption-text">
+                <strong>Figure 3.</strong>
+                Overview of the proposed AutoEval framework. The system processes a
+                robot manipulation video sequence (e.g., 32 frames) alongside kinematic prompts.
+                Top (AutoEval-S). Designed for Expert Grading and Rank-Guided tasks, this
+                branch employs a Spatio-Temporal Aggregation Strategy to compress high-frequency motion details
+                into composite visual tokens. It generates structured text predictions; following format decomposition,
+                the model is optimized via Supervised Fine-Tuning (SFT) using Cross-Entropy Loss.
+                Bottom (AutoEval-P). Tailored for Chain-of-Thought (CoT) reasoning, this branch adopts
+                the Group Relative Policy Optimization (GRPO) paradigm. The policy model generates multiple reasoning
+                paths (containing &lt;think&gt; tokens), optimized against a hybrid reward function comprising content
+                accuracy
+                (<i>r</i><sub>Content</sub>) and format constraints (<i>r</i><sub>Format</sub>) to enhance physical
+                reasoning capabilities.
+            </p>
+
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Dataset Distribution</h2>
+        <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <img src="assets/images/statics.png" class="teaser-img" style="max-width: 600px;" loading="lazy"
+                alt="Distribution of Grades">
+            <p class="caption-text" style="text-align: center;">
+                <strong>Figure 4.</strong> Distribution of Expert Grading across the Eval-Actions Small subset.
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">The Eval-Actions Benchmark</h2>
+        <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <img src="assets/images/dataset.png" class="teaser-img" style="max-width: 900px;" loading="lazy"
+                alt="The Eval-Actions Benchmark">
+            <p class="caption-text">
+                <strong>Table 1.</strong> Comparison of Robotic Manipulation Datasets. Unlike training-centric datasets
+                that maximize raw trajectory counts, Eval-Actions (Ours) maximizes annotation density, uniquely
+                providing failure scenarios, hybrid trajectory sources, and Fine-Grained Quality Scoring for diagnostic
+                assessment.
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Quantitative Results</h2>
+        <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <!-- 
+            [Image of Quantitative Results Table] -->
+
+            <img src="assets/images/results.png" class="teaser-img" style="max-width: 900px;" loading="lazy"
+                alt="Quantitative Results">
+            <p class="caption-text">
+                <strong>Table 2.</strong> Comparative Performance Analysis on the Eval-Actions Benchmark.
+                We report results across three protocols: Expert Grading (EG), Rank-Guided (RG), and Chain-of-Thought
+                (CoT). To quantify the domain gap, we include the zero-shot performance of representative VLMs without
+                Supervised Fine-Tuning (w/o SFT).
+                The near-zero correlations (e.g., SRCC ≈ 0.02) in these baselines highlight the necessity of our
+                fine-tuning pipeline.
+                Best results are highlighted in bold.
+            </p>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Qualitative Scoring Analysis</h2>
+        <p style="margin-bottom: 30px; color: #666; text-align: center;">
+            Examples of AutoEval scoring with Chain-of-Thought (CoT) reasoning.
+        </p>
+
+        <div class="w3-row-padding" style="width: 100%; max-width: 1200px; margin: 0 auto;">
+            <div class="w3-col l4 m4 s12" style="margin-bottom: 20px;">
+                <h4
+                    style="font-size: 1.2em; font-weight: 600; margin-bottom: 15px; color: #dc3545; text-align: center;">
+                    Low Quality (Score: 2.0)
+                </h4>
+                <video class="video-container" controls autoplay loop muted playsinline preload="auto">
+                    <source src="assets/videos/converted/score_2.mp4" type="video/mp4">
+                </video>
+                <div class="cot-text cot-low">
+                    <strong>[CoT Analysis]</strong><br>
+                    - <span style="color:#c0392b; font-weight:bold;">Motion:</span> Low average velocity and high joint
+                    velocity variance. Movements are hesitant and non-fluid.<br>
+                    - <span style="color:#c0392b; font-weight:bold;">Result:</span> Task failed. Only one bowl placed;
+                    third bowl untouched.<br>
+                    <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
+                    <strong>Final Score:</strong> 2.0<br>
+                    <strong>Success:</strong> <span style="color:red">False</span><br>
+                    <strong>Source:</strong> Policy
+                </div>
+            </div>
+
+            <div class="w3-col l4 m4 s12" style="margin-bottom: 20px;">
+                <h4
+                    style="font-size: 1.2em; font-weight: 600; margin-bottom: 15px; color: #ffc107; text-align: center;">
+                    Medium Quality (Score: 5.0)
+                </h4>
+                <video class="video-container" controls autoplay loop muted playsinline preload="auto">
+                    <source src="assets/videos/converted/score_5.mp4" type="video/mp4">
+                </video>
+                <div class="cot-text cot-med">
+                    <strong>[CoT Analysis]</strong><br>
+                    - <span style="color:#d35400; font-weight:bold;">Motion:</span> Deliberate and smooth. Low velocity
+                    variance indicates controlled, non-jerky movements.<br>
+                    - <span style="color:#d35400; font-weight:bold;">Result:</span> Task completed. Both bowls stacked
+                    without instability.<br>
+                    <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
+                    <strong>Final Score:</strong> 5.0<br>
+                    <strong>Success:</strong> <span style="color:green">True</span><br>
+                    <strong>Source:</strong> Policy
+                </div>
+            </div>
+
+            <div class="w3-col l4 m4 s12" style="margin-bottom: 20px;">
+                <h4
+                    style="font-size: 1.2em; font-weight: 600; margin-bottom: 15px; color: #28a745; text-align: center;">
+                    High Quality (Score: 9.0)
+                </h4>
+                <video class="video-container" controls autoplay loop muted playsinline preload="auto">
+                    <source src="assets/videos/converted/score_9.mp4" type="video/mp4">
+                </video>
+                <div class="cot-text cot-high">
+                    <strong>[CoT Analysis]</strong><br>
+                    - <span style="color:#27ae60; font-weight:bold;">Motion:</span> Moderate velocity with optimal
+                    control. No unnecessary pauses or jitters.<br>
+                    - <span style="color:#27ae60; font-weight:bold;">Result:</span> Flawless execution. Objects placed
+                    safely with high efficiency.<br>
+                    <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
+                    <strong>Final Score:</strong> 9.0<br>
+                    <strong>Success:</strong> <span style="color:green">True</span><br>
+                    <strong>Source:</strong> Policy
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Authenticity Verification Analysis</h2>
+        <p style="margin-bottom: 30px; color: #666; text-align: center;">
+            Distinguishing between <strong>Human Teleoperation</strong> and <strong>Policy Execution</strong>
+            based on kinematic patterns.
+        </p>
+
+        <div class="w3-row-padding" style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+            <div class="w3-col l6 m6 s12" style="margin-bottom: 20px;">
+                <h4
+                    style="font-size: 1.2em; font-weight: 600; margin-bottom: 15px; color: #007bff; text-align: center;">
+                    <i class="fa-solid fa-user"></i> Human Teleoperation
+                </h4>
+                <video class="video-container" controls autoplay loop muted playsinline preload="auto">
+                    <source src="assets/videos/converted/Policy_False.mp4" type="video/mp4">
+                </video>
+                <div class="cot-text" style="border-left-color: #007bff;">
+                    <strong>[CoT Analysis]</strong><br>
+                    - <span style="font-weight:bold;">Kinematics:</span> Motion exhibits natural variability and
+                    micro-adjustments typical of human biological control.<br>
+                    - <span style="font-weight:bold;">Smoothness:</span> High stability but with characteristic
+                    human reaction delays.<br>
+                    <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
+                    <strong>Predicted:</strong> <span style="color:#007bff">Human Teleoperation</span><br>
+                    <strong>Ground Truth:</strong> Human
+                </div>
+            </div>
+
+            <div class="w3-col l6 m6 s12" style="margin-bottom: 20px;">
+                <h4
+                    style="font-size: 1.2em; font-weight: 600; margin-bottom: 15px; color: #6f42c1; text-align: center;">
+                    <i class="fa-solid fa-robot"></i> Policy Execution
+                </h4>
+                <video class="video-container" controls autoplay loop muted playsinline preload="auto">
+                    <source src="assets/videos/converted/Policy_True.mp4" type="video/mp4">
+                </video>
+                <div class="cot-text" style="border-left-color: #6f42c1;">
+                    <strong>[CoT Analysis]</strong><br>
+                    - <span style="font-weight:bold;">Kinematics:</span> Motion is mathematically consistent with
+                    computed trajectories. Low-variance joint movements.<br>
+                    - <span style="font-weight:bold;">Pattern:</span> Deliberate, non-reactive control signatures
+                    detected.<br>
+                    <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
+                    <strong>Predicted:</strong> <span style="color:#6f42c1">Learned Policy</span><br>
+                    <strong>Ground Truth:</strong> Policy
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="shadow-card" style="background: linear-gradient(to bottom, #ffffff, #fdfdfd);">
+        <h2 class="grey-heading_nerf">Policy Performance Ranking</h2>
+        <div style="overflow-x: auto;">
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">
+                            <i class="fa-solid fa-robot" style="margin-right: 8px; color: #6f42c1;"></i> Policy
+                        </th>
+                        <th>Average Score</th>
+                        <th>Rank</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left; font-weight: 500;">\(\pi_0\)</td>
+                        <td class="bold-score">4.4702</td>
+                        <td><span class="rank-badge rank-1">1</span></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-weight: 500;">ACT</td>
+                        <td>3.6959</td>
+                        <td><span class="rank-badge rank-2">2</span></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-weight: 500;">RDT</td>
+                        <td>2.4304</td>
+                        <td><span class="rank-badge rank-3">3</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- <div class="shadow-card">
+        <h2 class="grey-heading_nerf">Citation</h2>
+        <p class="paragraph-3 nerf_text" style="text-align: center; color: #666; margin-bottom: 20px;">
+            If you find \(E_0\) useful in your research, please consider citing:
+        </p>
+        <pre style="background-color: #f4f6f8; 
+                    border: 1px solid #e1e4e8; 
+                    border-radius: 8px; 
+                    padding: 25px; 
+                    text-align: left; 
+                    overflow-x: auto; 
+                    width: 90%; 
+                    max-width: 800px; 
+                    margin: 0 auto;
+                    font-family: 'JetBrains Mono', monospace; 
+                    white-space: pre-wrap; 
+                    color: #24292e;
+                    word-break: break-all;">
+<code>@article{e0_autoeval2026,
+    title={E0: Evaluating Action Quality of Robotic Manipulation Policies in the Real-world}, 
+    author={Author One and Author Two and Author Three},
+    journal={IEEE Transactions on Robotics (T-RO)},
+    year={2026},
+    note={Under Review}
+}</code>
+        </pre>
+    </div>
+
+    <footer style="text-align: center; padding: 30px; color: #888; font-size: 0.9em; margin-bottom: 20px;">
+        This project page is inspired by <a href="https://github.com/nerfies/nerfies.github.io"
+            style="color: #666; text-decoration: underline;">Nerfies</a>.
+    </footer>
+
+</body> -->
+
+</html>
