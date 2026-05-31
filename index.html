@@ -4,14 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <title>Fine-Grained Action Quality Assessment for Robotic Manipulation Videos</title>
-    <meta content="Fine-Grained Action Quality Assessment for Robotic Manipulation Videos: A Benchmark and Multimodal Evaluator"
+    <meta
+        content="Fine-Grained Action Quality Assessment for Robotic Manipulation Videos: A Benchmark and Multimodal Evaluator"
         name="description" />
     <meta content="summary" name="twitter:card" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <link href="static/css/template.css" rel="stylesheet" type="text/css" />
     <link href="static/css/my_style.css" rel="stylesheet" type="text/css">
@@ -299,6 +297,7 @@
         }
 
         @media (max-width: 900px) {
+
             .highlight-grid,
             .method-grid,
             .figure-grid {
@@ -307,6 +306,7 @@
         }
 
         @media (max-width: 600px) {
+
             .highlight-grid,
             .method-grid,
             .figure-grid {
@@ -594,7 +594,7 @@
                         <td>AutoEval-S</td>
                         <td>RG</td>
                         <td class="bold-score">0.75</td>
-                        <td>85.0%</td>
+                        <td>88.0%</td>
                         <td>90.0%</td>
                     </tr>
                     <tr>
@@ -603,15 +603,15 @@
                         <td>RG</td>
                         <td class="bold-score">0.79</td>
                         <td>90.0%</td>
-                        <td>98.3%</td>
+                        <td>96.0%</td>
                     </tr>
                     <tr>
                         <td>Unseen Task</td>
                         <td>AutoEval-S</td>
                         <td>RG</td>
                         <td class="bold-score">0.76</td>
-                        <td>89.2%</td>
-                        <td>98.1%</td>
+                        <td>88.0%</td>
+                        <td>92.0%</td>
                     </tr>
                 </tbody>
             </table>
@@ -638,28 +638,34 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="text-align: left; font-weight: 500;">\(\pi_0\)</td>
-                        <td class="bold-score">4.47</td>
-                        <td>68.3%</td>
+                        <td style="text-align: left; font-weight: 500;">&pi;<sub>0.5</sub> (held-out)</td>
+                        <td class="bold-score">6.23</td>
+                        <td>72%</td>
                         <td><span class="rank-badge rank-1">1</span></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-weight: 500;">&pi;<sub>0</sub></td>
+                        <td class="bold-score">4.47</td>
+                        <td>68%</td>
+                        <td><span class="rank-badge rank-2">2</span></td>
                     </tr>
                     <tr>
                         <td style="text-align: left; font-weight: 500;">ACT</td>
                         <td>3.70</td>
-                        <td>41.1%</td>
-                        <td><span class="rank-badge rank-2">2</span></td>
+                        <td>40%</td>
+                        <td><span class="rank-badge rank-3">3</span></td>
                     </tr>
                     <tr>
                         <td style="text-align: left; font-weight: 500;">RDT</td>
                         <td>2.43</td>
-                        <td>55.5%</td>
-                        <td><span class="rank-badge rank-3">3</span></td>
+                        <td>56%</td>
+                        <td><span class="rank-badge">4</span></td>
                     </tr>
                     <tr>
-                        <td style="text-align: left; font-weight: 500;">DP</td>
+                        <td style="text-align: left; font-weight: 500;">DP (held-out)</td>
                         <td>2.12</td>
-                        <td>43.2%</td>
-                        <td><span class="rank-badge">4</span></td>
+                        <td>42%</td>
+                        <td><span class="rank-badge">5</span></td>
                     </tr>
                 </tbody>
             </table>
