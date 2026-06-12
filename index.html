@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Fine-Grained Action Quality Assessment for Robotic Manipulation Videos</title>
+    <title>Eval-Actions: Fine-Grained Execution Quality Evaluation for Robotic Manipulation</title>
     <meta
-        content="Fine-Grained Action Quality Assessment for Robotic Manipulation Videos: A Benchmark and Multimodal Evaluator"
+        content="Eval-Actions: Fine-Grained Execution Quality Evaluation for Robotic Manipulation"
         name="description" />
     <meta content="summary" name="twitter:card" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -146,7 +146,7 @@
 
         .highlight-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 18px;
             width: 100%;
             max-width: 1000px;
@@ -323,18 +323,17 @@
             <div class="anonymous-note">Anonymous Project Page</div>
             <h1 class="nerf_title_v2">
                 <span style="color: #f47149; font-weight: 900; text-shadow: 2px 2px 8px #fdd5c5, 0 0 2px #fff;">
-                    Eval-Actions &amp; AutoEval
+                    Eval-Actions
                 </span>
                 <br />
                 <span style="font-size: 0.68em; color: #444;">
-                    Fine-Grained Action Quality Assessment for Robotic Manipulation Videos:
-                    A Benchmark and Multimodal Evaluator
+                    Fine-Grained Execution Quality Evaluation for Robotic Manipulation
                 </span>
             </h1>
 
             <div class="external-link">
-                <a class="btn" href="#" role="button">
-                    <i class="ai ai-arxiv"></i> Paper (Coming Soon)
+                <a class="btn" href="T_RO.pdf" target="_blank" rel="noopener" role="button">
+                    <i class="ai ai-arxiv"></i> Paper
                 </a>
                 <a class="btn" href="#" role="button">
                     <i class="fa-brands fa-github"></i> Code (Coming Soon)
@@ -352,11 +351,12 @@
             <img src="assets/images/motivation.png" class="teaser-img" loading="lazy"
                 alt="Ambiguities in Success-Rate Evaluation">
             <p class="caption-text">
-                <strong>Figure 1.</strong> Binary success-rate evaluation can hide important execution differences.
-                Two rollouts may both succeed while differing substantially in motion smoothness, retries, collisions,
-                and efficiency. Eval-Actions adds supervision for task success, fine-grained quality, and trajectory
-                source, while AutoEval learns to predict these diagnostic signals from manipulation videos and compact
-                robot-state summaries.
+                <strong>Figure 1.</strong> Motivation and overview of the Eval-Actions diagnostic evaluation framework.
+                Conventional manipulation evaluation often reduces each execution to a binary success/failure label,
+                which cannot distinguish process quality among successful executions. Eval-Actions assesses execution
+                quality from task completion, motion smoothness, execution efficiency, and visible collision-related
+                events, provides EG/RG/CoT annotation labels, and introduces AutoEval as a reference multimodal
+                evaluator for quality scores, rankings, and CoT-style diagnostic explanations.
             </p>
         </div>
     </div>
@@ -365,25 +365,34 @@
         <h2 class="grey-heading_nerf">Abstract</h2>
         <p class="small-text">
             Although Vision-Action (VA) and Vision-Language-Action (VLA) policies have substantially improved robotic
-            manipulation capabilities, existing evaluation protocols relying only on binary success rates fail to
-            capture fine-grained execution differences, such as motion smoothness, anomalous collisions, and execution
-            efficiency. We redefine robotic manipulation evaluation as a fine-grained video Action Quality Assessment
-            (AQA) problem and introduce Eval-Actions, a diagnostic benchmark integrating RGB-D videos and robot-state
-            trajectories from both policy-generated and human-teleoperated executions. Eval-Actions provides three
-            complementary supervision signals: criteria-based Expert Grading (EG), metric-calibrated Rank-Guided (RG)
-            labels, and Chain-of-Thought (CoT) diagnostic annotations. Built on this benchmark, AutoEval jointly
-            processes visual temporal evidence and compact kinematic summaries. AutoEval-S uses Spatio-Temporal
-            Aggregation to preserve short-term motion cues within a strict VLM token budget, while AutoEval-P uses
-            Group Relative Policy Optimization (GRPO) to improve CoT-style diagnostic reasoning.
+            manipulation, most evaluation protocols still rely on binary success rates, which cannot distinguish
+            low-quality successes from smooth and efficient executions. This paper introduces Eval-Actions as a triadic
+            evaluation methodology and diagnostic benchmark for fine-grained execution-quality assessment in real-robot
+            manipulation. The proposed protocol combines three complementary supervision views: criteria-based Expert
+            Grading (EG), Rank-Guided (RG) labels, and Chain-of-Thought-style (CoT) diagnostic annotations. Eval-Actions
+            instantiates this protocol with 13K+ real-robot episodes across 150+ tasks and approximately 52 hours of
+            recordings, including RGB-D videos, robot-state trajectories, task descriptions, success/failure labels, and
+            auxiliary trajectory-source labels from teleoperated and policy-generated executions. To operationalize the
+            protocol, we provide AutoEval as a reference multimodal evaluator. AutoEval-S predicts EG/RG quality scores
+            and task outcomes from RGB temporal evidence and compact kinematic summaries, while AutoEval-P generates
+            CoT-style diagnostic explanations with GRPO-based explanation-prediction alignment.
         </p>
         <div class="highlight-grid">
             <div class="highlight-box">
-                <div class="highlight-number">13k+</div>
-                <div class="highlight-label">Manipulation episodes</div>
+                <div class="highlight-number">13K+</div>
+                <div class="highlight-label">Real-robot episodes</div>
             </div>
             <div class="highlight-box">
                 <div class="highlight-number">150+</div>
-                <div class="highlight-label">Single-arm and dual-arm tasks</div>
+                <div class="highlight-label">Manipulation tasks</div>
+            </div>
+            <div class="highlight-box">
+                <div class="highlight-number">52h</div>
+                <div class="highlight-label">RGB-D recordings</div>
+            </div>
+            <div class="highlight-box">
+                <div class="highlight-number">2.8K</div>
+                <div class="highlight-label">Failed executions</div>
             </div>
             <div class="highlight-box">
                 <div class="highlight-number">0.84</div>
@@ -402,12 +411,12 @@
             <img src="assets/images/examples.png" class="teaser-img" loading="lazy"
                 alt="Overview of the Eval-Actions Benchmark">
             <p class="caption-text">
-                <strong>Figure 2.</strong> Eval-Actions covers diverse robotic manipulation scenarios, including
-                single-arm interactions and complex bimanual coordination. Each episode contains synchronized sensory
-                and trajectory information, including RGB-D recordings, 7/14-DoF robot-state trajectories, action
-                trajectories, task descriptions, success labels, trajectory source labels, and diagnostic quality
-                annotations. The benchmark intentionally includes smooth successes, low-quality successes, partial
-                failures, and complete failures to support evaluation beyond binary task completion.
+                <strong>Figure 2.</strong> Overview of the Eval-Actions benchmark. The figure illustrates task
+                diversity across 150+ scenarios, including single-arm interactions and bimanual coordination tasks; a
+                detailed case study with demonstrations ranging from high-quality successes to failures; and the data
+                composition of each episode, including RGB-D sensory data, 7/14-DoF joint trajectories, task
+                descriptions, success/failure labels, trajectory-source labels, and a fine-grained quality radar chart
+                over task completion, smoothness, collision-related events, and efficiency.
             </p>
         </div>
     </div>
@@ -418,9 +427,10 @@
             <img src="assets/images/dataset.png" class="teaser-img" loading="lazy"
                 alt="Comparison of representative robotic manipulation datasets">
             <p class="caption-text">
-                <strong>Table 1.</strong> Compared with training-centric robotic manipulation datasets, Eval-Actions is
-                designed for diagnostic evaluation. It contains failure cases, mixed trajectory sources, fine-grained
-                quality scores, and CoT-style explanatory annotations based on RGB-D videos and robot trajectories.
+                <strong>Table I.</strong> Comparison of representative robotic manipulation datasets. Existing datasets
+                target policy training, focusing on trajectory quantity and diversity. Eval-Actions is designed for
+                diagnostic evaluation and includes failure cases, mixed trajectory sources, fine-grained quality scores,
+                and CoT-style explanatory annotations based on RGB-D videos and robot trajectories.
             </p>
         </div>
     </div>
@@ -430,39 +440,79 @@
         <div class="method-grid">
             <div class="method-box">
                 <h3>Expert Grading (EG)</h3>
-                Experts score each execution on a 1-10 scale using criteria including task completion, motion
-                smoothness, visible collision-related events, and execution efficiency.
+                Ten expert annotators score each execution on a 1-10 scale using a unified rubric covering task
+                success, collision occurrence, trajectory smoothness, and completion efficiency.
             </div>
             <div class="method-box">
                 <h3>Rank-Guided Labels (RG)</h3>
-                Measurable motion indicators are calibrated with expert rankings to produce metric-grounded quality
-                labels without leaking validation or test information.
+                Expert ranking preferences calibrate measurable motion indicators to produce metric-grounded quality
+                labels, with the calibration learned on the training split and then fixed for validation and test data.
             </div>
             <div class="method-box">
                 <h3>CoT Diagnostics</h3>
-                Textual annotations explain observable evidence such as retries, abrupt motion, object drops, abnormal
-                contacts, efficiency, final score, success, and trajectory source.
+                Textual annotations explain how observable criteria such as task completion, motion smoothness,
+                efficiency, object drops, abnormal contacts, final score, success, and source affect the evaluation.
             </div>
         </div>
     </div>
 
     <div class="shadow-card">
         <h2 class="grey-heading_nerf">Dataset Statistics</h2>
+        <div style="overflow-x: auto; margin-bottom: 28px;">
+            <table class="ranking-table" style="max-width: 900px;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Dataset</th>
+                        <th>Episodes</th>
+                        <th>Tasks</th>
+                        <th>Hours</th>
+                        <th>Failures</th>
+                        <th>Split</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="text-align: left;">Full Eval-Actions</td>
+                        <td>13K+</td>
+                        <td>150+</td>
+                        <td>52</td>
+                        <td>2.8K</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left;">EAS</td>
+                        <td>6K+</td>
+                        <td>50+</td>
+                        <td>12</td>
+                        <td>37.4%</td>
+                        <td>80% / 10% / 10%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="caption-text">
+                <strong>Table IV.</strong> Statistics of the full Eval-Actions benchmark and the annotation-complete
+                Eval-Actions Small (EAS) subset. The failure entry for EAS reports the failure ratio computed on the
+                annotation-complete subset; AutoEval experiments are conducted on EAS unless otherwise specified.
+            </p>
+        </div>
         <div class="figure-grid">
             <div>
                 <img src="assets/images/nums.png" class="teaser-img" loading="lazy"
                     alt="Representative task statistics of Eval-Actions">
                 <p class="caption-text">
-                    <strong>Figure 3.</strong> Representative task statistics, including the number of demonstrations
-                    and total duration for single-arm and dual-arm manipulation tasks.
+                    <strong>Figure 3.</strong> Representative task statistics of Eval-Actions. The top chart shows the
+                    distribution of demonstration counts for each representative task, while the bottom chart shows the
+                    total duration in seconds for the corresponding tasks. These tasks cover diverse manipulation
+                    scenarios, including both single-arm and dual-arm operations.
                 </p>
             </div>
             <div>
                 <img src="assets/images/statics.png" class="teaser-img" loading="lazy"
                     alt="Distribution of Expert Grading scores">
                 <p class="caption-text">
-                    <strong>Figure 4.</strong> Expert Grading distribution across Eval-Actions Small. The subset covers
-                    both failed executions and successful trajectories with a broad quality spectrum.
+                    <strong>Figure 4.</strong> Distribution of Expert Grading scores in the Eval-Actions Small (EAS)
+                    subset. The chart shows the proportions of failed executions and successful executions at different
+                    quality levels over the 1-10 score range.
                 </p>
             </div>
         </div>
@@ -473,26 +523,30 @@
         <div style="width: 100%; max-width: 1000px; margin: 0 auto 28px;">
             <img src="assets/images/framework.png" class="teaser-img" loading="lazy" alt="AutoEval Framework">
             <p class="caption-text">
-                <strong>Figure 5.</strong> AutoEval processes manipulation videos and kinematic prompts. AutoEval-S uses
-                Spatio-Temporal Aggregation for structured score, success, and source prediction, while AutoEval-P uses
-                GRPO to improve CoT-style diagnostic reasoning.
+                <strong>Figure 5.</strong> Overview of the proposed AutoEval framework. AutoEval takes a robot
+                manipulation video sequence and a compact kinematic summary as inputs. AutoEval-S is used for
+                structured prediction under the EG and RG protocols, where Spatio-Temporal Aggregation tiles
+                neighboring frames into composite visual inputs to preserve short-term motion cues under a fixed VLM
+                visual-input budget. AutoEval-P is used for CoT-style diagnostic explanation generation and is
+                optimized with Group Relative Policy Optimization, encouraging consistency between diagnostic
+                explanations and structured predictions.
             </p>
         </div>
         <div class="method-grid">
             <div class="method-box">
                 <h3>Video + Kinematics</h3>
-                AutoEval takes RGB temporal evidence and compact robot-state summaries, using motion statistics as
-                calibration signals for smoothness and efficiency.
+                AutoEval uses RGB temporal evidence and compact robot-kinematic summaries, while RGB-D recordings are
+                stored in the benchmark for diagnostic analysis.
             </div>
             <div class="method-box">
                 <h3>AutoEval-S</h3>
-                Spatio-Temporal Aggregation stitches short frame windows into composite visual inputs, preserving dense
-                motion cues while keeping the VLM token budget fixed.
+                AutoEval-S predicts quality score, task success, and trajectory source under the EG and RG protocols,
+                using Spatio-Temporal Aggregation to preserve short-term motion cues within a fixed VLM input budget.
             </div>
             <div class="method-box">
                 <h3>AutoEval-P</h3>
-                GRPO optimizes CoT-style outputs with rewards for score accuracy, success prediction, source
-                prediction, and output format consistency.
+                AutoEval-P generates CoT-style diagnostic explanations and applies GRPO rewards for score accuracy,
+                success prediction, source prediction, and output-format consistency.
             </div>
         </div>
     </div>
@@ -500,28 +554,19 @@
     <div class="shadow-card">
         <h2 class="grey-heading_nerf">Quantitative Results</h2>
         <p class="small-text" style="text-align: center; margin-bottom: 28px;">
-            AutoEval is evaluated on the annotation-dense Eval-Actions Small (EAS) split across EG, RG, and CoT
-            protocols.
+            AutoEval is evaluated on the annotation-complete Eval-Actions Small (EAS) split across EG, RG, and CoT
+            protocols, using RGB temporal evidence and compact kinematic summaries.
         </p>
-        <div style="width: 100%; max-width: 1000px; margin: 0 auto 28px;">
-            <img src="assets/images/results.png" class="teaser-img" loading="lazy"
-                alt="Comparative performance on the Eval-Actions benchmark">
-            <p class="caption-text">
-                <strong>Table 2.</strong> Comparative performance across Expert Grading, Rank-Guided, and CoT
-                protocols. The near-zero SRCC of zero-shot VLMs highlights the need for task-specific fine-tuning,
-                while AutoEval-S achieves the strongest EG/RG score prediction.
-            </p>
-        </div>
         <div style="overflow-x: auto;">
             <table class="ranking-table" style="max-width: 1000px;">
                 <thead>
                     <tr>
                         <th style="text-align: left;">Method</th>
                         <th>Protocol</th>
-                        <th>SRCC ↑</th>
-                        <th>Rℓ2 ↓</th>
-                        <th>Success Acc. ↑</th>
-                        <th>Source Acc. ↑</th>
+                        <th>SRCC &uarr;</th>
+                        <th>R<sub>&ell;2</sub> &darr;</th>
+                        <th>Success Acc. &uarr;</th>
+                        <th>Source Acc. &uarr;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -567,25 +612,33 @@
                     </tr>
                 </tbody>
             </table>
+            <p class="caption-text">
+                <strong>Table VI.</strong> Comparative performance analysis on the Eval-Actions benchmark. Results are
+                reported across three protocols: Expert Grading (EG), Rank-Guided (RG), and Chain-of-Thought (CoT). To
+                quantify the domain gap, the zero-shot performance of representative VLMs without supervised
+                fine-tuning is included; the near-zero correlations indicate the importance of task-specific
+                fine-tuning.
+            </p>
         </div>
     </div>
 
     <div class="shadow-card">
         <h2 class="grey-heading_nerf">Structured Generalization</h2>
         <p class="small-text" style="text-align: center; margin-bottom: 28px;">
-            Held-out splits evaluate whether the evaluator remains useful when task categories, robot arms, or both are
-            unseen during training.
+            Structured generalization is evaluated on held-out tasks, held-out robot arms, and cross-dataset splits.
+            Each split contains 50 trajectories; T+A denotes unseen tasks and unseen arms.
         </p>
         <div style="overflow-x: auto;">
-            <table class="ranking-table" style="max-width: 900px;">
+            <table class="ranking-table" style="max-width: 1000px;">
                 <thead>
                     <tr>
                         <th>Split</th>
                         <th>Model</th>
                         <th>Protocol</th>
-                        <th>SRCC ↑</th>
-                        <th>Success Acc. ↑</th>
-                        <th>Source Acc. ↑</th>
+                        <th>SRCC &uarr;</th>
+                        <th>R<sub>&ell;2</sub> &darr;</th>
+                        <th>Success Acc. &uarr;</th>
+                        <th>Source Acc. &uarr;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -594,6 +647,7 @@
                         <td>AutoEval-S</td>
                         <td>RG</td>
                         <td class="bold-score">0.75</td>
+                        <td>6.12</td>
                         <td>88.0%</td>
                         <td>90.0%</td>
                     </tr>
@@ -602,6 +656,7 @@
                         <td>AutoEval-S</td>
                         <td>RG</td>
                         <td class="bold-score">0.79</td>
+                        <td>4.31</td>
                         <td>90.0%</td>
                         <td>96.0%</td>
                     </tr>
@@ -610,19 +665,44 @@
                         <td>AutoEval-S</td>
                         <td>RG</td>
                         <td class="bold-score">0.76</td>
+                        <td>4.74</td>
                         <td>88.0%</td>
                         <td>92.0%</td>
                     </tr>
+                    <tr>
+                        <td>RoboMIND-S</td>
+                        <td>AutoEval-S</td>
+                        <td>RG</td>
+                        <td class="bold-score">0.78</td>
+                        <td>4.88</td>
+                        <td>90.0%</td>
+                        <td>94.0%</td>
+                    </tr>
+                    <tr>
+                        <td>Open-X-S</td>
+                        <td>AutoEval-S</td>
+                        <td>RG</td>
+                        <td class="bold-score">0.83</td>
+                        <td>4.13</td>
+                        <td>96.0%</td>
+                        <td>98.0%</td>
+                    </tr>
                 </tbody>
             </table>
+            <p class="caption-text">
+                <strong>Table IX.</strong> Structured generalization on held-out tasks and robot arms. Arm and Task
+                denote unseen-arm-only and unseen-task-only splits; RoboMIND-S and Open-X-S provide additional
+                cross-dataset distribution shifts. Succ. and Src. report success-prediction and source-prediction
+                accuracies.
+            </p>
         </div>
     </div>
 
     <div class="shadow-card" style="background: linear-gradient(to bottom, #ffffff, #fdfdfd);">
         <h2 class="grey-heading_nerf">Policy-Level Ranking</h2>
         <p class="small-text" style="text-align: center; margin-bottom: 28px;">
-            AutoEval-S can compare VA/VLA rollout videos with fine-grained quality scores that complement binary
-            success rates.
+            Policy-level ranking uses AutoEval-S under the EG protocol. Each policy-task pair is evaluated with 20
+            rollout trials, and the reported score and success rate are averaged over evaluated tasks and rollouts.
         </p>
         <div style="overflow-x: auto;">
             <table class="ranking-table">
@@ -669,12 +749,16 @@
                     </tr>
                 </tbody>
             </table>
+            <p class="caption-text">
+                <strong>Table X.</strong> Policy-level ranking using AutoEval-S under the EG protocol. Held-out denotes
+                policy models whose rollout trajectories are excluded from the AutoEval training split.
+            </p>
         </div>
     </div>
 
     <footer style="text-align: center; padding: 30px; color: #888; font-size: 0.9em; margin-bottom: 20px;">
-        Anonymous project page for double-blind review. Code, dataset, and paper links will be released after the
-        review period.
+        Anonymous project page for double-blind review. Code and dataset links will be released after the review
+        period.
     </footer>
 
 </body>
